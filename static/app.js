@@ -28,19 +28,105 @@ fetch(url)
         Airport: selectedAirport,
         Airline: selectedCarrier,
         Total_Flights: d3.sum(filteredData, d => d.arr_flights),
+        Total_Delays_Cancellations:
+        d3.sum(filteredData, d => d.carrier_ct) +
+        d3.sum(filteredData, d => d.weather_ct) +
+        d3.sum(filteredData, d => d.nas_ct) +
+        d3.sum(filteredData, d => d.security_ct) +
+        d3.sum(filteredData, d => d.late_aircraft_ct) +
+        d3.sum(filteredData, d => d.arr_cancelled) +
+        d3.sum(filteredData, d => d.arr_diverted),
+        Total_On_Time: d3.sum(filteredData, d => d.arr_flights) - (
+          d3.sum(filteredData, d => d.carrier_ct) +
+          d3.sum(filteredData, d => d.weather_ct) +
+          d3.sum(filteredData, d => d.nas_ct) +
+          d3.sum(filteredData, d => d.security_ct) +
+          d3.sum(filteredData, d => d.late_aircraft_ct) +
+          d3.sum(filteredData, d => d.arr_cancelled) +
+          d3.sum(filteredData, d => d.arr_diverted)
+        ),
         Crew_Delay: d3.sum(filteredData, d => d.carrier_ct),
-        Weather_delay: d3.sum(filteredData, d => d.weather_ct),
+        Weather_Delay: d3.sum(filteredData, d => d.weather_ct),
         Traffic_Delay: d3.sum(filteredData, d => d.nas_ct),
         Security_Cancelled: d3.sum(filteredData, d => d.security_ct),
         Late_Aircraft_Delay: d3.sum(filteredData, d => d.late_aircraft_ct),
         Cancelled: d3.sum(filteredData, d => d.arr_cancelled),
         Diverted: d3.sum(filteredData, d => d.arr_diverted),
         Minutes_Delayed: d3.sum(filteredData, d => d.arr_delay),
+        Minutes_Waited_Per_Delay: d3.sum(filteredData, d => d.arr_delay) / (
+        d3.sum(filteredData, d => d.carrier_ct) +
+        d3.sum(filteredData, d => d.weather_ct) +
+        d3.sum(filteredData, d => d.nas_ct) +
+        d3.sum(filteredData, d => d.security_ct) +
+        d3.sum(filteredData, d => d.late_aircraft_ct)
+        )
          // You can add more fields here as needed...
       };
 
       // Update the info box with the selected data
       updateInfoBox(combinedData);
+
+      // Create and update the pie chart
+  createPieChart(combinedData);
+}
+
+// Function to create and update the pie chart
+function createPieChart(combinedData) {
+  // Extract the delay categories and corresponding data
+  const delayCategories = [
+    "On Time",
+    "Crew Delay",
+    "Weather Delay",
+    "Traffic Delay",
+    "Security Cancelled",
+    "Late Aircraft Delay",
+    "Cancelled",
+    "Diverted",
+  ];
+
+  const delayData = [
+    combinedData.Total_On_Time,
+    combinedData.Crew_Delay,
+    combinedData.Weather_Delay,
+    combinedData.Traffic_Delay,
+    combinedData.Security_Cancelled,
+    combinedData.Late_Aircraft_Delay,
+    combinedData.Cancelled,
+    combinedData.Diverted,
+  ];
+
+  // Get the canvas element for the pie chart
+  const ctx = document.getElementById("pie-chart").getContext("2d");
+
+  // Create the pie chart
+  const pieChart = new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels: delayCategories,
+      datasets: [
+        {
+          data: delayData,
+          backgroundColor: [
+            "#ff6384",
+            "#36a2eb",
+            "#ffce56",
+            "#4bc0c0",
+            "#9966ff",
+            "#ff9999",
+            "#aaff99",
+            "#9E9E9E"
+          ],
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      legend: {
+        position: "right",
+      },
+    },
+  });
+
 
       // You can implement the chart updating logic here based on the combinedData
       // For simplicity, I'm just logging the combinedData
