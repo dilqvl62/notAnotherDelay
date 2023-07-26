@@ -3,7 +3,7 @@ from sqlalchemy import create_engine, text
 from flask_cors import CORS  # Import the CORS extension
 import urllib.parse
 
-password = "postgres"
+password = ""
 encoded = urllib.parse.quote_plus(password)
 
 engine = create_engine(f"postgresql+psycopg2://postgres:{encoded}@localhost/notAnotherDelaydb")
