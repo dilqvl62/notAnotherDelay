@@ -1,26 +1,68 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Not Another Delay</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <!-- <style>
+    /* Custom styles for the header */
+    .jumbotron {
+      padding: 20px; /* Adjust the padding to change the size of the header */
+      background-image: url('./flight.png'); /* URL of the flight image */
+      font-size: 40px; /* Adjust the font size to change the size of the header text */
+      background-color: #f0f0f0; /* You can set a custom background color for the header */
+      
+    }
+  </style> -->
+  <style>
+    /* Custom style to align the .well div to the left */
+    .well {
+      float: right;
+      margin-right: 10px; /* Optional margin for spacing */
+    }
+  </style>
 </head>
 
 <body>
-  
 
-  <div class="row">
-    <div class="col-md-6">
-      <label for="airport-select">Select Airport:</label>
-      <select id="airport-select"></select>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 jumbotron text-center">
+        <h1>Flight Performence Dashboard</h1>
+        <p>Use the interactive charts below to choose your next Flight</p>
+      </div>
     </div>
-    <div class="col-md-6">
-      <label for="carrier-select">Select Carrier:</label>
-      <select id="carrier-select"></select>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="well">
+          <h5>IATA Airport Code:</h5>
+          <select id="selDataset" onchange="optionChanged(this.value)"></select>
+        </div>
+        
+      </div>
+      <div class="col-md-5">
+        <div id="curve"></div>
+      </div>
+      <div class="col-md-7">
+        <div id="spline"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div id="pie"></div>
+      </div>
     </div>
   </div>
 
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <script src="./static/app.js"></script>
+  
+
 </body>
 
 </html>
