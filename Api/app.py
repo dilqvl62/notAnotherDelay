@@ -10,10 +10,37 @@ engine = create_engine(f"postgresql+psycopg2://postgres:{encoded}@localhost/notA
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for the entire app
-@app.route('/airport')
+
+@app.route('/')
 def index():
     # Execute the SQL query using engine.execute() with text()
-    query = text('SELECT airport, sum(Weather_ct) FROM airline_delay_cause_db."Airlines" group by airport')
+    query = text('SELECT DISTINCT airport FROM airline_delay_cause_db."Airlines" ORDER BY airport ASC')
+    result = engine.execute(query)
+
+    # Fetch all rows from the result and convert them to a list of dictionaries
+    rows = [dict(row) for row in result]
+
+    # Return the query results as a JSON response
+    return jsonify(rows)
+
+@app.route('/lineAndBar_charts')
+def lineAndBar_charts():
+    # Execute the SQL query using engine.execute() with text()
+    query = text('SELECT month, carrier_name, sum(arr_flights) AS total_flights, avg(carrier_ct) AS Avg_carrierCt, avg(weather_ct) AS Avg_weather_ct, avg(nas_ct) AS Avg_nasCt FROM airline_delay_cause_db."Airlines" GROUP BY month, carrier_name')
+   
+    result = engine.execute(query)
+
+    # Fetch all rows from the result and convert them to a list of dictionaries
+    rows = [dict(row) for row in result]
+
+    # Return the query results as a JSON response
+    return jsonify(rows)
+
+@app.route('/major_airlines')
+def major_airlines():
+    # Execute the SQL query using engine.execute() with text()
+    query = text('SELECT month,  avg(weather_ct) AS Avg_weather_ct FROM airline_delay_cause_db."Airlines" GROUP BY month')
+   
     result = engine.execute(query)
 
     # Fetch all rows from the result and convert them to a list of dictionaries
