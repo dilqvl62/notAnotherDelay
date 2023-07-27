@@ -2,20 +2,20 @@
 
 const url = "http://127.0.0.1:5000/";
 
-// Fetch data from the Flask API endpoint
+// fetch data from the Flask API endpoint
 fetch(url)
   .then(response => response.json())
   .then(fetchedData => {
-    // Store the fetched data in the 'data' variable
+    // store the fetched data in the 'data' variable
     const data = fetchedData;
-
-    // Extract unique airport names and carrier names from the data
+  
+    // creates instance of unique values, removes duplicates
     const airportNames = [...new Set(data.map(item => item.airport_name))];
     const carrierNames = [...new Set(data.map(item => item.carrier_name))];
 
-    // Function to update charts based on selected values
+    // updates charts based on selected values
     function updateCharts(selectedAirport, selectedCarrier) {
-      // Filter data based on the selected airport and carrier
+      // Filters data by selected airport and airline
       const filteredData = data.filter(item => {
         return (
           (selectedAirport === "" || item.airport_name === selectedAirport) &&
@@ -23,7 +23,7 @@ fetch(url)
         );
       });
 
-      // Combine the rest of the datapoints for the selected airport or carrier
+      // combines values based on selection and stores them into variables
       const combinedData = {
         Airport: selectedAirport,
         Airline: selectedCarrier,
@@ -60,92 +60,89 @@ fetch(url)
         d3.sum(filteredData, d => d.security_ct) +
         d3.sum(filteredData, d => d.late_aircraft_ct)
         )
-         // You can add more fields here as needed...
       };
 
-      // Update the info box with the selected data
+      // updates info box in html with selected data
       updateInfoBox(combinedData);
 
-      // Create and update the pie chart
-  createPieChart(combinedData);
-}
+      // creates pie chart based on selected data
+      createPieChart(combinedData);
+        function createPieChart(combinedData) {
+        const delayCategories = [
+          "On Time",
+          "Crew Delay",
+          "Weather Delay",
+          "Traffic Delay",
+          "Security Cancelled",
+          "Late Aircraft Delay",
+          "Cancelled",
+          "Diverted",
+        ];
 
-// Function to create and update the pie chart
-function createPieChart(combinedData) {
-  // Extract the delay categories and corresponding data
-  const delayCategories = [
-    "On Time",
-    "Crew Delay",
-    "Weather Delay",
-    "Traffic Delay",
-    "Security Cancelled",
-    "Late Aircraft Delay",
-    "Cancelled",
-    "Diverted",
-  ];
+        const delayData = [
+          ((combinedData.Total_On_Time / combinedData.Total_Flights) * 100).toFixed(2),
+          ((combinedData.Crew_Delay / combinedData.Total_Flights) * 100).toFixed(2),
+          ((combinedData.Weather_Delay / combinedData.Total_Flights) * 100).toFixed(2),
+          ((combinedData.Traffic_Delay / combinedData.Total_Flights) * 100).toFixed(2),
+          ((combinedData.Security_Cancelled / combinedData.Total_Flights) * 100).toFixed(2),
+          ((combinedData.Late_Aircraft_Delay / combinedData.Total_Flights) * 100).toFixed(2),
+          ((combinedData.Cancelled / combinedData.Total_Flights) * 100).toFixed(2),
+          ((combinedData.Diverted / combinedData.Total_Flights) * 100).toFixed(2),
+        ];
+        let pieChart = {
+          type: "pie",
+          data: {
+            labels: delayCategories,
+            datasets: [
+              {
+                data: delayData,
+                backgroundColor: [
+                  "#ff6384",
+                  "#36a2eb",
+                  "#ffce56",
+                  "#4bc0c0",
+                  "#9966ff",
+                  "#ff9999",
+                  "#aaff99",
+                  "#9E9E9E"
+                ],
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            legend: {
+              position: "right",
+            },
+          },
+        };
+        const ctx = document.getElementById("pieChart").getContext("2d");
+        // destroys previous chart and creats new one off of newly selected filters
 
-  const delayData = [
-    combinedData.Total_On_Time,
-    combinedData.Crew_Delay,
-    combinedData.Weather_Delay,
-    combinedData.Traffic_Delay,
-    combinedData.Security_Cancelled,
-    combinedData.Late_Aircraft_Delay,
-    combinedData.Cancelled,
-    combinedData.Diverted,
-  ];
-
-  // Get the canvas element for the pie chart
-  const ctx = document.getElementById("pie-chart").getContext("2d");
-
-  // Create the pie chart
-  const pieChart = new Chart(ctx, {
-    type: "pie",
-    data: {
-      labels: delayCategories,
-      datasets: [
-        {
-          data: delayData,
-          backgroundColor: [
-            "#ff6384",
-            "#36a2eb",
-            "#ffce56",
-            "#4bc0c0",
-            "#9966ff",
-            "#ff9999",
-            "#aaff99",
-            "#9E9E9E"
-          ],
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      legend: {
-        position: "right",
-      },
-    },
-  });
-
-
-      // You can implement the chart updating logic here based on the combinedData
-      // For simplicity, I'm just logging the combinedData
+        if (Chart.getChart("pieChart")){
+          Chart.getChart("pieChart").destroy();
+        }
+        pieChart = new Chart(ctx, pieChart);
+      }
       console.log("Combined Data:", combinedData);
     }
 
-    // Function to update the info box with the selected data
+    // stores html element into infoBox variable 
     function updateInfoBox(selectedData) {
       const infoBox = d3.select("#info-box");
-      infoBox.html(""); // Clear previous content
+      // sets as empty string before updating
+      infoBox.html(""); 
 
-      // Create paragraphs with data for the info box
+      // rounds values to nearest whole number and appends the values to the info box using key value pairs
       for (const [key, value] of Object.entries(selectedData)) {
         const roundedValue = typeof value === "number" ? value.toFixed(0) : value;
         infoBox.append("p").text(`${key}: ${roundedValue}`);
       }
     }
 
-    // Function to create and populate a dropdown menu
+    ///creating dropdown menus that dynamicly update data
+
+    // dropdown is created and populated from values in options array
     function createDropdown(id, options, onChangeCallback) {
       const dropdown = d3.select(`#${id}`);
 
@@ -157,13 +154,14 @@ function createPieChart(combinedData) {
         .attr("value", d => d)
         .text(d => d);
 
+        //adds event listener to dropdown, listening for when different option in dropdown is chosen
       dropdown.on("change", function () {
         const selectedValue = this.value;
         onChangeCallback(selectedValue);
       });
     }
 
-    // Create and populate the airport and carrier dropdown menus
+    // populates dropdown based off called array, calls updateCharts function
     createDropdown("airport-select", ["", ...airportNames], selectedAirport => {
       const selectedCarrier = d3.select("#carrier-select").node().value;
       updateCharts(selectedAirport, selectedCarrier);

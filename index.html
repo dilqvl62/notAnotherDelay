@@ -2,30 +2,46 @@
 <html lang="en">
 
 <head>
+  <title></title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="./static/app.js"></script>
 </head>
 
 <body>
-
-  <div class="row">
-    <div class="col-md-6">
-      <label for="airport-select">Select Airport:</label>
-      <select id="airport-select"></select>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <label for="airport-select">Select Airport:</label>
+        <select id="airport-select"></select>
+      </div>
+      <div id="info-box">
+      </div>
+      <div class="col-md-6">
+        <label for="carrier-select">Select Airline:</label>
+        <select id="carrier-select"></select>
+      </div>
+      <div class="col-md-6">
+        <canvas id="pieChart" width="20" height="20"></canvas>
+      </div>
     </div>
-    <div id="info-box">
+    <div class="row">
+      <div class="col">
+        <div id="sabarChart"></div>
+      </div>
     </div>
-    <div class="col-md-6">
-      <label for="carrier-select">Select Airline:</label>
-      <select id="carrier-select"></select>
-    </div>
-    <div class="col-md-6">
-      <canvas id="pie-chart" width="1" height="1"></canvas>
+    <div class="row">
+      <div class="col">
+        <div id="augChart"></div>
+      </div>
     </div>
   </div>
-
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  <script src="./static/app.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 
 </html>
