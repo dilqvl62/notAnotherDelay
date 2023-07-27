@@ -39,7 +39,7 @@ def lineAndBar_charts():
 @app.route('/major_airlines')
 def major_airlines():
     # Execute the SQL query using engine.execute() with text()
-    query = text('SELECT month,  avg(weather_ct) AS Avg_weather_ct FROM airline_delay_cause_db."Airlines" GROUP BY month')
+    query = text('SELECT month,  avg(weather_ct) AS Avg_weather_ct, avg(carrier_ct) as avg_carrier_ct, avg(nas_ct) as average_nasCt FROM airline_delay_cause_db."Airlines" GROUP BY month')
    
     result = engine.execute(query)
 
