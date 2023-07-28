@@ -2,9 +2,9 @@
 <html lang="en">
 
 <head>
-  <title></title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
@@ -12,33 +12,59 @@
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="./static/app.js"></script>
+  <title>Not Another Delay</title>
+  <style>
+    .well {
+      float: right;
+      margin-right: 10px;
+    }
+  </style>
 </head>
 
 <body>
   <div class="container">
     <div class="row">
-      <div class="col-md-6">
-        <label for="airport-select">Select Airport:</label>
-        <select id="airport-select"></select>
-      </div>
-      <div id="info-box">
-      </div>
-      <div class="col-md-6">
-        <label for="carrier-select">Select Airline:</label>
-        <select id="carrier-select"></select>
-      </div>
-      <div class="col-md-6">
-        <canvas id="pieChart" width="20" height="20"></canvas>
+      <div class="col-md-12 jumbotron text-center">
+        <h1>Flight Performence Dashboard</h1>
+        <p>Use the interactive charts below to choose your next Flight</p>
       </div>
     </div>
     <div class="row">
-      <div class="col">
-        <div id="sabarChart"></div>
+      <div class="col-md-12">
+        <div class="well">
+          <h5>IATA Airport Code:</h5>
+          <select id="selDataset" onchange="optionChanged(this.value)"></select>
+        </div>
+
+      </div>
+
+      <img src="BarChart.png">
+      <img src="LineChart.png">
+
+      <div class="col-md-5">
+        <div id="curve"></div>
+      </div>
+      <div class="col-md-7">
+        <div id="spline"></div>
       </div>
     </div>
     <div class="row">
-      <div class="col">
-        <div id="augChart"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <label for="airport-select">Select Airport:</label>
+            <select id="airport-select"></select>
+          </div>
+          <div class="col-md-6">
+            <label for="carrier-select">Select Airline:</label>
+            <select id="carrier-select"></select>
+          </div>
+          <div id="info-box">
+          </div>
+          <div class="col-md-6">
+            <canvas id="pieChart" width="20" height="20"></canvas>
+          </div>
+        </div>
       </div>
     </div>
   </div>

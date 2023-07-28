@@ -1,5 +1,5 @@
 // app.js
-
+////Max
 const url = "http://127.0.0.1:5000/";
 
 // fetch data from the Flask API endpoint
@@ -8,7 +8,7 @@ fetch(url)
   .then(fetchedData => {
     // store the fetched data in the 'data' variable
     const data = fetchedData;
-  
+
     // creates instance of unique values, removes duplicates
     const airportNames = [...new Set(data.map(item => item.airport_name))];
     const carrierNames = [...new Set(data.map(item => item.carrier_name))];
@@ -29,13 +29,13 @@ fetch(url)
         Airline: selectedCarrier,
         Total_Flights: d3.sum(filteredData, d => d.arr_flights),
         Total_Delays_Cancellations:
-        d3.sum(filteredData, d => d.carrier_ct) +
-        d3.sum(filteredData, d => d.weather_ct) +
-        d3.sum(filteredData, d => d.nas_ct) +
-        d3.sum(filteredData, d => d.security_ct) +
-        d3.sum(filteredData, d => d.late_aircraft_ct) +
-        d3.sum(filteredData, d => d.arr_cancelled) +
-        d3.sum(filteredData, d => d.arr_diverted),
+          d3.sum(filteredData, d => d.carrier_ct) +
+          d3.sum(filteredData, d => d.weather_ct) +
+          d3.sum(filteredData, d => d.nas_ct) +
+          d3.sum(filteredData, d => d.security_ct) +
+          d3.sum(filteredData, d => d.late_aircraft_ct) +
+          d3.sum(filteredData, d => d.arr_cancelled) +
+          d3.sum(filteredData, d => d.arr_diverted),
         Total_On_Time: d3.sum(filteredData, d => d.arr_flights) - (
           d3.sum(filteredData, d => d.carrier_ct) +
           d3.sum(filteredData, d => d.weather_ct) +
@@ -54,11 +54,11 @@ fetch(url)
         Diverted: d3.sum(filteredData, d => d.arr_diverted),
         Minutes_Delayed: d3.sum(filteredData, d => d.arr_delay),
         Minutes_Waited_Per_Delay: d3.sum(filteredData, d => d.arr_delay) / (
-        d3.sum(filteredData, d => d.carrier_ct) +
-        d3.sum(filteredData, d => d.weather_ct) +
-        d3.sum(filteredData, d => d.nas_ct) +
-        d3.sum(filteredData, d => d.security_ct) +
-        d3.sum(filteredData, d => d.late_aircraft_ct)
+          d3.sum(filteredData, d => d.carrier_ct) +
+          d3.sum(filteredData, d => d.weather_ct) +
+          d3.sum(filteredData, d => d.nas_ct) +
+          d3.sum(filteredData, d => d.security_ct) +
+          d3.sum(filteredData, d => d.late_aircraft_ct)
         )
       };
 
@@ -67,7 +67,7 @@ fetch(url)
 
       // creates pie chart based on selected data
       createPieChart(combinedData);
-        function createPieChart(combinedData) {
+      function createPieChart(combinedData) {
         const delayCategories = [
           "On Time",
           "Crew Delay",
@@ -119,7 +119,7 @@ fetch(url)
         const ctx = document.getElementById("pieChart").getContext("2d");
         // destroys previous chart and creats new one off of newly selected filters
 
-        if (Chart.getChart("pieChart")){
+        if (Chart.getChart("pieChart")) {
           Chart.getChart("pieChart").destroy();
         }
         pieChart = new Chart(ctx, pieChart);
@@ -131,7 +131,7 @@ fetch(url)
     function updateInfoBox(selectedData) {
       const infoBox = d3.select("#info-box");
       // sets as empty string before updating
-      infoBox.html(""); 
+      infoBox.html("");
 
       // rounds values to nearest whole number and appends the values to the info box using key value pairs
       for (const [key, value] of Object.entries(selectedData)) {
@@ -154,7 +154,7 @@ fetch(url)
         .attr("value", d => d)
         .text(d => d);
 
-        //adds event listener to dropdown, listening for when different option in dropdown is chosen
+      //adds event listener to dropdown, listening for when different option in dropdown is chosen
       dropdown.on("change", function () {
         const selectedValue = this.value;
         onChangeCallback(selectedValue);
@@ -175,3 +175,78 @@ fetch(url)
   .catch(error => {
     console.error("Error fetching data:", error);
   });
+
+
+
+
+
+
+
+
+
+
+const airport = "http://127.0.0.1:5000";
+
+d3.json(airport).then((data) => {
+  console.log(data.airport)
+  const select = d3.select("#selDataset");
+  select.selectAll("option")
+    .data(data)
+    .enter()
+    .append("option")
+    .attr("value", d => d.airport )
+    .text(d => d.airport);
+})
+
+const line_chart =  "http://127.0.0.1:5000"
+
+d3.json(line_chart).then((data) => {
+
+    
+    const months = data.map(item => item.month);
+    console.log(months)
+    const totalFlights = data.map(item => item.total_flights);
+    const carrier_name = data.map(item =>item.carrier_name)
+    const trace1 = {
+      x: months,
+      y: totalFlights, 
+      labels: carrier_name,
+      type: 'bar',
+      hoverinfo: 'labels', 
+      text: carrier_name
+    };
+
+    const layout = {
+      title: 'Total Flights throughout the year<br> for major airlines',
+      xaxis: {
+        title: 'Month',
+        dtick: 1
+      },
+      yaxis: {
+        title: 'Total Flights'
+      }
+    };
+
+    Plotly.newPlot('curve', [trace1], layout);
+
+    const averageCarrier_ct = data.map(item => item.avg_carrierct);
+    const avg_weather_ct = data.map(item => item.avg_weather_ct);
+    // const carrier_name = data.map(item =>item.carrier_name)
+    var trace2 = {
+      x: months.reverse(),
+      y: avg_weather_ct.slice(0, 4),
+      mode: 'lines+markers',
+      line: {shape: 'hv'},
+      type: 'scatter'
+    };
+    var trace3 = {
+      x: months,
+      y: averageCarrier_ct,
+      mode: 'lines+markers',
+      line: {shape: 'hv'},
+      type: 'scatter'
+    };
+    Plotly.newPlot('spline', [trace2]);
+
+})
+  

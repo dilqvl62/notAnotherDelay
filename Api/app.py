@@ -13,7 +13,7 @@ CORS(app)  # Enable CORS for the entire app
 @app.route('/')
 def index():
     # Execute the SQL query using engine.execute() with text()
-    query = text('SELECT * FROM airline_delay_cause_db."Airlines"')
+    query = text('SELECT DISTINCT airport FROM airline_delay_cause_db."Airlines" ORDER BY airport ASC')
     result = engine.execute(query)
 
     # Fetch all rows from the result and convert them to a list of dictionaries
@@ -21,6 +21,7 @@ def index():
 
     # Return the query results as a JSON response
     return jsonify(rows)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
